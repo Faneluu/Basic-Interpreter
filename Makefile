@@ -2,8 +2,8 @@
 
 all: interpreter
 
-interpreter: interpreter.tab.c lex.yy.c
-	@g++ interpreter.tab.c lex.yy.c -lfl -o interpreter
+interpreter: interpreter.tab.c lex.yy.c main.c
+	@g++ main.c interpreter.tab.c lex.yy.c -lfl -o interpreter
 
 lex.yy.c: interpreter.l
 	@flex interpreter.l

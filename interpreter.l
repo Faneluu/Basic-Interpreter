@@ -13,7 +13,7 @@
 ")"                     { colNo++; return TOK_RIGHT; }
 ";"                     { colNo++; return ';'; }
 "="                     { colNo++; return '='; }
-
+                        
 [0-9]+\.[0-9]*          {
                                         printf("Find double in FLEX!\n");
                                         yylloc.first_line = lineNo;
@@ -41,9 +41,9 @@
                             return TOK_INT; 
                         }
 
-"int"                   { colNo+=3; return TOK_DECLARE; }
-"double"                { colNo += 6; return TOK_DECLARE; }
-"float"                 { colNo += 5; return TOK_DECLARE; }
+"int"                   { colNo+=3; return TOK_DECLARE_INT; }
+"double"                { colNo += 6; return TOK_DECLARE_DOUBLE; }
+"float"                 { colNo += 5; return TOK_DECLARE_FLOAT; }
 
 "print"                 { colNo+=5; return TOK_PRINT; }
 "scan"                  { colNo+=4; return TOK_SCAN;  }
