@@ -15,68 +15,43 @@ void execute_script(const char *filename) {
     }
     yyin = file;
     yyparse(); // Parse and execute the script
+    printf("Exit script!\n");
     fclose(file);
 }
 
 int main() {
-    char input[256]; // Buffer for user input
+    char *input; // Buffer for user input
 
-    //printf("Welcome to the Interpreter. Type 'run <script>' to execute a script, or 'exit' to quit.\n");
+    printf("Welcome to the Interpreter. Type 'run <script>' to execute a script, or 'exit' to quit.\n");
 
     while (1) {
         printf("> "); // Prompt
-        printf("Want to run a script? [y/n]\n");
-        //fflush(stdout);
 
-        if (fgets(input, sizeof(input), stdin) == NULL) {
-            if (feof(stdin)) {
-                printf("\nExiting...\n");
-                break;
-            } else {
-                perror("Error reading input");
-                continue;
-            }
+        input = (char*)calloc(256, sizeof(char));
+
+        if (fgets(input, 256, stdin) == NULL) {
+                printf("Error reading input");
         }
+
+        //scanf("%s", input);
 
         input[strcspn(input, "\n")] = 0; // Remove newline character
 
-
-        if (strcmp(input, "y") == 0){
-            printf("run ");
-            memset(input, '\0', strlen(input));
-            
-            if (fgets(input, sizeof(input), stdin) == NULL) {
-                if (feof(stdin)) {
-                    printf("\nExiting...\n");
-                    break;
-                } else {
-                    perror("Error reading input");
-                    continue;
-                }
-            }
-
-            input[strcspn(input, "\n")] = 0; // Remove newline character
-
-            execute_script(input);
-        }
-
-        else if (strcmp(input, "n") == 0){
-            if (strcmp(input, "exit") == 0) {
+        if (strcmp(input, "exit") == 0) {
                 break;
-            } 
-            else {
-                yyparse(); // Parse and execute the command
-            }
+        } 
+
+        else if (strncmp(input, "run ", 4) == 0){
+            execute_script(input + 4);
         }
 
-        else 
-            printf("Invalid option!\n");
-
-        memset(input, '\0', strlen(input));
+        else{
+            yyparse(); // Parse and execute the command
+        }
+        printf("Prepare to go in while '%s'\n", input);
+        free(input);
+        printf("After free\n");
     }
-
-    
-
     return 0;
 }
 

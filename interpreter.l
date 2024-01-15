@@ -41,9 +41,11 @@
                             return TOK_INT; 
                         }
 
-"int"                   { colNo+=3; return TOK_DECLARE_INT; }
-"double"                { colNo += 6; return TOK_DECLARE_DOUBLE; }
-"float"                 { colNo += 5; return TOK_DECLARE_FLOAT; }
+
+
+"int"                   { printf("find int\n"); colNo +=3 ; return TOK_DECLARE_INT; }
+"double"                { printf("find double\n"); colNo += 6; return TOK_DECLARE_DOUBLE; }
+"float"                 { printf("find float\n"); colNo += 5; return TOK_DECLARE_FLOAT; }
 
 "print"                 { colNo+=5; return TOK_PRINT; }
 "scan"                  { colNo+=4; return TOK_SCAN;  }

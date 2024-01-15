@@ -9,6 +9,9 @@ class TVAR
     int valInt;
     double valDouble;
     float valFloat;
+    bool isInt;
+    bool isDouble;
+    bool isFloat;
     TVAR* next;
     public:
     static TVAR* head;
@@ -31,6 +34,10 @@ class TVAR
     void setValueFloat(char *n, float v);
     void addFloat(char* n, float v = -1);
 
+    bool checkIsInt(char *n);
+    bool checkIsDouble(char *n);
+    bool checkIsFloat(char *n);
+
     void printVars();
 };
 
@@ -45,6 +52,10 @@ TVAR::TVAR(char *n, int v)
     this->valInt = v;
     this->valDouble = -1;
     this->valFloat = -1;
+
+    this->isInt = true;
+    this->isDouble = false;
+    this->isFloat = false;
 }
 
 TVAR::TVAR(char *n, double v)
@@ -55,6 +66,10 @@ TVAR::TVAR(char *n, double v)
     this->valInt = -1;
     this->valDouble = v;
     this->valFloat = -1;
+
+    this->isInt = false;
+    this->isDouble = true;
+    this->isFloat = false;
 }
 
 TVAR::TVAR(char *n, float v)
@@ -65,6 +80,10 @@ TVAR::TVAR(char *n, float v)
     this->valInt = -1;
     this->valDouble = -1;
     this->valFloat = v;
+
+    this->isInt = false;
+    this->isDouble = false;
+    this->isFloat = true;
 }
 
 TVAR::TVAR()
@@ -116,7 +135,7 @@ void TVAR::setValueInt(char *n, int v)
 
 void TVAR::addInt(char *n, int v)
 {
-    //printf("Added value int: %d\n", v);
+    printf("Added value int: %d\n", v);
     TVAR* elem = new TVAR(n, v);
     if(head == NULL)
     { 
@@ -183,6 +202,42 @@ void TVAR::addFloat(char *n, float v)
         TVAR::tail->next = elem;
         TVAR::tail = elem;
     }
+}
+
+bool TVAR::checkIsInt(char *n)
+{
+    TVAR* tmp = TVAR::head;
+    while(tmp != NULL)
+    {
+        if(strcmp(tmp->nume,n) == 0)
+        return tmp->isInt;
+        tmp = tmp->next;
+    }
+    return false;
+}
+
+bool TVAR::checkIsDouble(char *n)
+{
+    TVAR* tmp = TVAR::head;
+    while(tmp != NULL)
+    {
+        if(strcmp(tmp->nume,n) == 0)
+        return tmp->isDouble;
+        tmp = tmp->next;
+    }
+    return false;
+}
+
+bool TVAR::checkIsFloat(char *n)
+{
+    TVAR* tmp = TVAR::head;
+    while(tmp != NULL)
+    {
+        if(strcmp(tmp->nume,n) == 0)
+        return tmp->isFloat;
+        tmp = tmp->next;
+    }
+    return false;
 }
 
 double TVAR::getValueDouble(char* n)

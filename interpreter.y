@@ -16,9 +16,9 @@
 %token TOK_PLUS TOK_MINUS TOK_MULTIPLY TOK_DIVIDE TOK_LEFT TOK_RIGHT TOK_PRINT TOK_ERROR TOK_SCAN
 %token TOK_DECLARE_INT TOK_DECLARE_DOUBLE TOK_DECLARE_FLOAT
 
-%token <val_int> TOK_INT
-%token <val_double> TOK_DOUBLE
-%token <val_float> TOK_FLOAT
+%token <val_int> TOK_INT 
+%token <val_double> TOK_DOUBLE  
+%token <val_float> TOK_FLOAT 
 
 %token <sir> TOK_VARIABLE
 %type <val_double> E
@@ -243,21 +243,21 @@ I : TOK_VARIABLE '=' E
     {
         if(ts->exists($2) == 1)
         {
-            if(ts->getValueInt($2) != 1){
+            if(ts->checkIsInt($2)){
                 int a;
                 printf("Introduceti numarul: ");
                 scanf("%d", &a);
                 ts->setValueInt($2, a);
             }
 
-            else if(ts->getValueDouble($2) != 1){
+            else if(ts->checkIsDouble($2)){
                 double a;
                 printf("Introduceti numarul: ");
                 scanf("%lf", &a);
                 ts->setValueDouble($2, a);
             }
 
-            else if(ts->getValueFloat($2) != 1){
+            else if(ts->checkIsFloat($2)){
                 float a;
                 printf("Introduceti numarul: ");
                 scanf("%f", &a);
@@ -277,7 +277,222 @@ I : TOK_VARIABLE '=' E
         yyerror(msg);
         YYERROR;
     }
+    printf("Finish scan!\n");
 }
+
+// convert to int
+| TOK_VARIABLE '=' TOK_LEFT TOK_DECLARE_INT TOK_RIGHT TOK_VARIABLE
+{
+    if (ts != NULL){
+        printf("Convert to int!\n");
+        if(ts->checkIsInt($1)){
+            if (ts->checkIsInt($6)){
+                ts->setValueInt($1, ts->getValueInt($6));
+            }
+            else if (ts->checkIsDouble($6)){
+                ts->setValueInt($1, (int)ts->getValueDouble($6));
+            }
+            else if (ts->checkIsFloat($6)){
+                ts->setValueInt($1, (int)ts->getValueFloat($6));
+            }
+            else{
+                sprintf(msg,"%d:%d Eroare semantica: Variabila %s nu exista!", @1.first_line, @1.first_column, $6);
+                yyerror(msg);
+                YYERROR;
+            }
+        }
+
+        else{
+            sprintf(msg,"%d:%d Eroare semantica: Variabila %s nu este int!", @1.first_line, @1.first_column, $1);
+            yyerror(msg);
+            YYERROR;
+        }
+
+    }
+    else {
+        sprintf(msg,"%d:%d Eroare semantica: Variabila %s este utilizata fara sa fi fost declarata!", @1.first_line, @1.first_column, $1);
+        yyerror(msg);
+        YYERROR;
+    }
+}
+
+| TOK_DECLARE_INT TOK_VARIABLE '=' TOK_LEFT TOK_DECLARE_INT TOK_RIGHT TOK_VARIABLE
+{
+    if (ts != NULL){
+        printf("Convert to int!\n");
+        if(ts->checkIsInt($2)){
+            if (ts->checkIsInt($7)){
+                ts->setValueInt($2, ts->getValueInt($7));
+            }
+            else if (ts->checkIsDouble($7)){
+                ts->setValueInt($2, (int)ts->getValueDouble($7));
+            }
+            else if (ts->checkIsFloat($7)){
+                ts->setValueInt($2, (int)ts->getValueFloat($7));
+            }
+            else{
+                sprintf(msg,"%d:%d Eroare semantica: Variabila %s nu exista!", @1.first_line, @1.first_column, $7);
+                yyerror(msg);
+                YYERROR;
+            }
+        }
+
+        else{
+            sprintf(msg,"%d:%d Eroare semantica: Variabila %s nu este int!", @1.first_line, @1.first_column, $2);
+            yyerror(msg);
+            YYERROR;
+        }
+
+    }
+    else {
+        sprintf(msg,"%d:%d Eroare semantica: Variabila %s este utilizata fara sa fi fost declarata!", @1.first_line, @1.first_column, $2);
+        yyerror(msg);
+        YYERROR;
+    }
+}
+
+// convert to double
+| TOK_VARIABLE '=' TOK_LEFT TOK_DECLARE_DOUBLE TOK_RIGHT TOK_VARIABLE
+{
+    if (ts != NULL){
+        printf("Convert to double!\n");
+        if(ts->checkIsDouble($1)){
+            if (ts->checkIsInt($6)){
+                ts->setValueDouble($1, (double)ts->getValueInt($6));
+            }
+            else if (ts->checkIsDouble($6)){
+                ts->setValueDouble($1, ts->getValueDouble($6));
+            }
+            else if (ts->checkIsFloat($6)){
+                ts->setValueDouble($1, (double)ts->getValueFloat($6));
+            }
+            else{
+                sprintf(msg,"%d:%d Eroare semantica: Variabila %s nu exista!", @1.first_line, @1.first_column, $6);
+                yyerror(msg);
+                YYERROR;
+            }
+        }
+
+        else{
+            sprintf(msg,"%d:%d Eroare semantica: Variabila %s nu este double!", @1.first_line, @1.first_column, $1);
+            yyerror(msg);
+            YYERROR;
+        }
+
+    }
+    else {
+        sprintf(msg,"%d:%d Eroare semantica: Variabila %s este utilizata fara sa fi fost declarata!", @1.first_line, @1.first_column, $1);
+        yyerror(msg);
+        YYERROR;
+    }
+}
+
+| TOK_DECLARE_DOUBLE TOK_VARIABLE '=' TOK_LEFT TOK_DECLARE_DOUBLE TOK_RIGHT TOK_VARIABLE
+{
+    if (ts != NULL){
+        printf("Convert to double!\n");
+        if(ts->checkIsDouble($2)){
+            if (ts->checkIsInt($7)){
+                ts->setValueDouble($2, (double)ts->getValueInt($7));
+            }
+            else if (ts->checkIsDouble($7)){
+                ts->setValueDouble($2, ts->getValueDouble($7));
+            }
+            else if (ts->checkIsFloat($7)){
+                ts->setValueDouble($2, (double)ts->getValueFloat($7));
+            }
+            else{
+                sprintf(msg,"%d:%d Eroare semantica: Variabila %s nu exista!", @1.first_line, @1.first_column, $7);
+                yyerror(msg);
+                YYERROR;
+            }
+        }
+
+        else{
+            sprintf(msg,"%d:%d Eroare semantica: Variabila %s nu este double!", @1.first_line, @1.first_column, $2);
+            yyerror(msg);
+            YYERROR;
+        }
+
+    }
+    else {
+        sprintf(msg,"%d:%d Eroare semantica: Variabila %s este utilizata fara sa fi fost declarata!", @1.first_line, @1.first_column, $2);
+        yyerror(msg);
+        YYERROR;
+    }
+}
+
+// convert to float
+| TOK_VARIABLE '=' TOK_LEFT TOK_DECLARE_FLOAT TOK_RIGHT TOK_VARIABLE
+{
+    if (ts != NULL){
+        printf("Convert to float!\n");
+        if(ts->checkIsFloat($1)){
+            if (ts->checkIsInt($6)){
+                ts->setValueFloat($1, (float)ts->getValueInt($6));
+            }
+            else if (ts->checkIsDouble($6)){
+                ts->setValueFloat($1, (float)ts->getValueDouble($6));
+            }
+            else if (ts->checkIsFloat($6)){
+                ts->setValueFloat($1, ts->getValueFloat($6));
+            }
+            else{
+                sprintf(msg,"%d:%d Eroare semantica: Variabila %s nu exista!", @1.first_line, @1.first_column, $6);
+                yyerror(msg);
+                YYERROR;
+            }
+        }
+
+        else{
+            sprintf(msg,"%d:%d Eroare semantica: Variabila %s nu este float!", @1.first_line, @1.first_column, $1);
+            yyerror(msg);
+            YYERROR;
+        }
+
+    }
+    else {
+        sprintf(msg,"%d:%d Eroare semantica: Variabila %s este utilizata fara sa fi fost declarata!", @1.first_line, @1.first_column, $1);
+        yyerror(msg);
+        YYERROR;
+    }
+}
+
+| TOK_DECLARE_FLOAT TOK_VARIABLE '=' TOK_LEFT TOK_DECLARE_FLOAT TOK_RIGHT TOK_VARIABLE
+{
+    if (ts != NULL){
+        printf("Convert to float!\n");
+        if(ts->checkIsFloat($2)){
+            if (ts->checkIsInt($7)){
+                ts->setValueFloat($2, (float)ts->getValueInt($7));
+            }
+            else if (ts->checkIsDouble($7)){
+                ts->setValueFloat($2, (float)ts->getValueDouble($7));
+            }
+            else if (ts->checkIsFloat($7)){
+                ts->setValueFloat($2, ts->getValueFloat($7));
+            }
+            else{
+                sprintf(msg,"%d:%d Eroare semantica: Variabila %s nu exista!", @1.first_line, @1.first_column, $7);
+                yyerror(msg);
+                YYERROR;
+            }
+        }
+
+        else{
+            sprintf(msg,"%d:%d Eroare semantica: Variabila %s nu este float!", @1.first_line, @1.first_column, $2);
+            yyerror(msg);
+            YYERROR;
+        }
+
+    }
+    else {
+        sprintf(msg,"%d:%d Eroare semantica: Variabila %s este utilizata fara sa fi fost declarata!", @1.first_line, @1.first_column, $2);
+        yyerror(msg);
+        YYERROR;
+    }
+}
+
 ;
 
 E : E TOK_PLUS E { $$ = $1 + $3; }
@@ -296,6 +511,7 @@ E : E TOK_PLUS E { $$ = $1 + $3; }
         $$ = $1 / $3; 
     } 
 }
+
 | TOK_LEFT E TOK_RIGHT { $$ = $2; }
 | TOK_INT { $$ = $1; }
 | TOK_DOUBLE { $$ = $1; }
